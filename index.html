@@ -20734,7 +20734,7 @@
     const volumeToggle = document.getElementById('volume-toggle');
     const wrapToggle = document.getElementById('wrap-toggle');
     const fontSlider = document.getElementById('font-slider');
-
+    const audioFile = AUDIO_FOLDER + node.dataset.filename; 
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     const source = audioCtx.createMediaElementSource(audioPlayer);
     const gainNode = audioCtx.createGain();
