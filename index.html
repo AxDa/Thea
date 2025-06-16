@@ -20723,62 +20723,73 @@
     <div id="info-box"></div>
     <audio id="audio-player" controls></audio>
 
-    <script>
-    const AUDIO_FOLDER = "Sample_C/"; 
-    const THUMBNAIL_FOLDER = "waveform_thumbnails/";
-    const nodes = document.querySelectorAll('.node');
-    const labels = document.querySelectorAll('.node-label');
-    const infoBox = document.getElementById('info-box');
-    const audioPlayer = document.getElementById('audio-player');
-    const filterSelect = document.getElementById('filter-select');
-    const volumeToggle = document.getElementById('volume-toggle');
-    const wrapToggle = document.getElementById('wrap-toggle');
-    const fontSlider = document.getElementById('font-slider');
-    const audioFile = AUDIO_FOLDER + node.dataset.filename; 
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const source = audioCtx.createMediaElementSource(audioPlayer);
-    const gainNode = audioCtx.createGain();
-    source.connect(gainNode).connect(audioCtx.destination);
-    let gainEnabled = false;
+<script>
+const AUDIO_FOLDER = "Sample_C/";
+const THUMBNAIL_FOLDER = "waveform_thumbnails/";
 
-    volumeToggle.addEventListener('click', () => {
-        gainEnabled = !gainEnabled;
-        gainNode.gain.value = gainEnabled ? 2 : 1;
-        volumeToggle.textContent = gainEnabled ? '🔊 Volume Gain: On' : '🔊 Volume Gain: Off';
+const nodes = document.querySelectorAll('.node');
+const labels = document.querySelectorAll('.node-label');
+const infoBox = document.getElementById('info-box');
+const audioPlayer = document.getElementById('audio-player');
+const filterSelect = document.getElementById('filter-select');
+const volumeToggle = document.getElementById('volume-toggle');
+const wrapToggle = document.getElementById('wrap-toggle');
+const fontSlider = document.getElementById('font-slider');
+
+// Audio setup
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const source = audioCtx.createMediaElementSource(audioPlayer);
+const gainNode = audioCtx.createGain();
+source.connect(gainNode).connect(audioCtx.destination);
+
+let gainEnabled = false;
+
+volumeToggle.addEventListener('click', () => {
+    gainEnabled = !gainEnabled;
+    gainNode.gain.value = gainEnabled ? 2 : 1;
+    volumeToggle.textContent = gainEnabled ? '🔊 Volume Gain: On' : '🔊 Volume Gain: Off';
+});
+
+// Node interactions
+nodes.forEach(node => {
+    node.addEventListener('mouseenter', () => {
+        node.setAttribute('r', 10);
     });
 
+    node.addEventListener('mouseleave', () => {
+        node.setAttribute('r', 6);
+    });
+
+    node.addEventListener("click", () => {
+        const audioFile = AUDIO_FOLDER + node.dataset.filename;
+        audioPlayer.src = audioFile;
+        audioPlayer.load();
+        audioPlayer.play();
+
+        const thumbnailHTML = `<img src="${THUMBNAIL_FOLDER}${node.dataset.thumbnail}" width="100%">`;
+
+        infoBox.innerHTML = `
+            <strong>🧠 Gang Group:</strong> ${node.dataset.group}<br>
+            <strong>🧠 Filename:</strong> ${node.dataset.filename}<br>
+            <strong>🗓️ Modified:</strong> ${node.dataset.modified}<br>
+            <strong>📅 Date:</strong> ${node.dataset.date}<br>
+            <strong>⏱️ Duration:</strong> ${node.dataset.duration} sec<br>
+            <strong>🔊 Bitrate:</strong> ${node.dataset.bitrate} kbps<br>
+            <strong>💬 Comment:</strong> ${node.dataset.comment}<br>
+            ${thumbnailHTML}
+        `;
+        infoBox.style.display = "block";
+    });
+});
+
+// Filter dropdown
+filterSelect.addEventListener('change', () => {
+    const val = filterSelect.value;
     nodes.forEach(node => {
-        node.addEventListener('mouseenter', () => {
-            node.setAttribute('r', 10);
-        });
-        node.addEventListener('mouseleave', () => {
-            node.setAttribute('r', 6);
-        });
-        node.addEventListener("click", () => {
-            const audioFile = AUDIO_FOLDER + node.dataset.filename;
-            audioPlayer.src = audioFile;
-            audioPlayer.play();
-
-            infoBox.innerHTML = `
-                <strong>🧠 Gang Group:</strong> ${node.dataset.group}<br>
-                <strong>🧠 Filename:</strong> ${node.dataset.filename}<br>
-                <strong>🗓️ Modified:</strong> ${node.dataset.modified}<br>
-                <strong>📅 Date:</strong> ${node.dataset.date}<br>
-                <strong>⏱️ Duration:</strong> ${node.dataset.duration} sec<br>
-                <strong>🔊 Bitrate:</strong> ${node.dataset.bitrate} kbps<br>
-                <strong>💬 Comment:</strong> ${node.dataset.comment}<br>
-                <img src="${THUMBNAIL_FOLDER}${node.dataset.thumbnail}" width="100%">
-            `;
-            infoBox.style.display = "block";
-        });
+        node.style.display = (val === 'all' || node.dataset.group === val) ? 'block' : 'none';
     });
+});
 
-    filterSelect.addEventListener('change', () => {
-        const val = filterSelect.value;
-        nodes.forEach(node => {
-            node.style.display = (val === 'all' || node.dataset.group === val) ? 'block' : 'none';
-        });
-    });
 
     wrapToggle.addEventListener('click', () => {
         const wrapOn = wrapToggle.textContent.includes('Off');
