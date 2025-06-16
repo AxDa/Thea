@@ -20723,6 +20723,9 @@
     <div id="info-box"></div>
     <audio id="audio-player" controls></audio>
 
+    <div id="debug" style="white-space:pre; background:#eee; padding:10px; font-family:monospace;"></div>
+
+    
 <script>
 const AUDIO_FOLDER = "Sample_C/";
 const THUMBNAIL_FOLDER = "waveform_thumbnails/";
@@ -20761,32 +20764,35 @@ nodes.forEach(node => {
     });
 
 node.addEventListener("click", () => {
-    const audioFile = AUDIO_FOLDER + node.dataset.filename;
-    const thumbnailFile = THUMBNAIL_FOLDER + node.dataset.thumbnail;
+  const filename = node.dataset.filename;
+  const thumbnail = node.dataset.thumbnail;
 
-    console.log("Audio File:", audioFile);
-    console.log("Thumbnail File:", thumbnailFile);
+  const audioFile = AUDIO_FOLDER + filename;
+  const imageFile = THUMBNAIL_FOLDER + thumbnail;
 
-    audioPlayer.src = audioFile;
-    audioPlayer.load();
-    audioPlayer.play().catch(error => {
-        console.warn("Autoplay prevented:", error);
-    });
+  // Show debugging info on the page
+  document.getElementById("debug").textContent =
+    `Audio: ${audioFile}\nImage: ${imageFile}`;
 
-    const thumbnailHTML = `<img src="${thumbnailFile}" width="100%">`;
+  audioPlayer.src = audioFile;
+  audioPlayer.load();
+  audioPlayer.play().catch(error => {
+    document.getElementById("debug").textContent += `\nAutoplay Error: ${error.message}`;
+  });
 
-    infoBox.innerHTML = `
-        <strong>🧠 Gang Group:</strong> ${node.dataset.group}<br>
-        <strong>🧠 Filename:</strong> ${node.dataset.filename}<br>
-        <strong>🗓️ Modified:</strong> ${node.dataset.modified}<br>
-        <strong>📅 Date:</strong> ${node.dataset.date}<br>
-        <strong>⏱️ Duration:</strong> ${node.dataset.duration} sec<br>
-        <strong>🔊 Bitrate:</strong> ${node.dataset.bitrate} kbps<br>
-        <strong>💬 Comment:</strong> ${node.dataset.comment}<br>
-        ${thumbnailHTML}
-    `;
-    infoBox.style.display = "block";
+  infoBox.innerHTML = `
+    <strong>🧠 Gang Group:</strong> ${node.dataset.group}<br>
+    <strong>🧠 Filename:</strong> ${filename}<br>
+    <strong>🗓️ Modified:</strong> ${node.dataset.modified}<br>
+    <strong>📅 Date:</strong> ${node.dataset.date}<br>
+    <strong>⏱️ Duration:</strong> ${node.dataset.duration} sec<br>
+    <strong>🔊 Bitrate:</strong> ${node.dataset.bitrate} kbps<br>
+    <strong>💬 Comment:</strong> ${node.dataset.comment}<br>
+    <img src="${imageFile}" width="100%">
+  `;
+  infoBox.style.display = "block";
 });
+
 
 });
 
