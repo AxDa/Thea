@@ -20767,7 +20767,7 @@
                 <strong>⏱️ Duration:</strong> ${node.dataset.duration} sec<br>
                 <strong>🔊 Bitrate:</strong> ${node.dataset.bitrate} kbps<br>
                 <strong>💬 Comment:</strong> ${node.dataset.comment}<br>
-                <img src="${node.dataset.thumbnail}" width="100%">
+                <img src="${THUMBNAIL_FOLDER}${node.dataset.thumbnail}" width="100%">
             `;
             infoBox.style.display = "block";
         });
