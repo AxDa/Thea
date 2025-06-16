@@ -20760,26 +20760,34 @@ nodes.forEach(node => {
         node.setAttribute('r', 6);
     });
 
-    node.addEventListener("click", () => {
-        const audioFile = AUDIO_FOLDER + node.dataset.filename;
-        audioPlayer.src = audioFile;
-        audioPlayer.load();
-        audioPlayer.play();
+node.addEventListener("click", () => {
+    const audioFile = AUDIO_FOLDER + node.dataset.filename;
+    const thumbnailFile = THUMBNAIL_FOLDER + node.dataset.thumbnail;
 
-        const thumbnailHTML = `<img src="${THUMBNAIL_FOLDER}${node.dataset.thumbnail}" width="100%">`;
+    console.log("Audio File:", audioFile);
+    console.log("Thumbnail File:", thumbnailFile);
 
-        infoBox.innerHTML = `
-            <strong>🧠 Gang Group:</strong> ${node.dataset.group}<br>
-            <strong>🧠 Filename:</strong> ${node.dataset.filename}<br>
-            <strong>🗓️ Modified:</strong> ${node.dataset.modified}<br>
-            <strong>📅 Date:</strong> ${node.dataset.date}<br>
-            <strong>⏱️ Duration:</strong> ${node.dataset.duration} sec<br>
-            <strong>🔊 Bitrate:</strong> ${node.dataset.bitrate} kbps<br>
-            <strong>💬 Comment:</strong> ${node.dataset.comment}<br>
-            ${thumbnailHTML}
-        `;
-        infoBox.style.display = "block";
+    audioPlayer.src = audioFile;
+    audioPlayer.load();
+    audioPlayer.play().catch(error => {
+        console.warn("Autoplay prevented:", error);
     });
+
+    const thumbnailHTML = `<img src="${thumbnailFile}" width="100%">`;
+
+    infoBox.innerHTML = `
+        <strong>🧠 Gang Group:</strong> ${node.dataset.group}<br>
+        <strong>🧠 Filename:</strong> ${node.dataset.filename}<br>
+        <strong>🗓️ Modified:</strong> ${node.dataset.modified}<br>
+        <strong>📅 Date:</strong> ${node.dataset.date}<br>
+        <strong>⏱️ Duration:</strong> ${node.dataset.duration} sec<br>
+        <strong>🔊 Bitrate:</strong> ${node.dataset.bitrate} kbps<br>
+        <strong>💬 Comment:</strong> ${node.dataset.comment}<br>
+        ${thumbnailHTML}
+    `;
+    infoBox.style.display = "block";
+});
+
 });
 
 // Filter dropdown
