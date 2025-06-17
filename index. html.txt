@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dynamic Audio & Image Loader</title>
+  <style>
+    #infoBox {
+      margin-top: 20px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      width: 300px;
+    }
+    button {
+      margin: 5px;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Click a button to load audio and image</h1>
+
+<!-- Buttons simulate nodes -->
+<button data-audio="Thea/Sample_C/trashed-1721687029-trk1_this_is_bbc_see_poseidon_or_neptune_bizness_Bleak-Street_36_community.pending-1719695145_220545_2205-2235_utc_1_axd_22062024.mp3" data-img="Thea/waveform_thumbnails/trashed-1721687029-trk1_this_is_bbc_see_poseidon_or_neptune_bizness_Bleak-Street_36_community.pending-1719695145_220545_2205-2235_utc_1_axd_22062024.png">Play Sample 1</button>
+###<button data-audio="audio/sample2.mp3" data-img="images/sample2.png">Play Sample 2</button>
+
+<div id="player">
+  <audio controls id="audioPlayer">
+    Your browser does not support the audio element.
+  </audio>
+  <div id="infoBox">
+    <p><strong>Currently Playing:</strong> <span id="audioName">None</span></p>
+    <img id="imageDisplay" src="" alt="No Image Loaded" />
+  </div>
+</div>
+
+<script>
+  const buttons = document.querySelectorAll('button');
+  const audioPlayer = document.getElementById('audioPlayer');
+  const audioName = document.getElementById('audioName');
+  const imageDisplay = document.getElementById('imageDisplay');
+
+  buttons.forEach(button => {
+    button.addEventListener('click', () => {
+      const audioSrc = button.getAttribute('data-audio');
+      const imgSrc = button.getAttribute('data-img');
+
+      // Update audio source and load it
+      audioPlayer.src = audioSrc;
+      audioPlayer.load();
+
+      // Play audio after load
+      audioPlayer.play().catch(err => {
+        console.log('Playback prevented:', err);
+      });
+
+      // Update audio name display
+      audioName.textContent = audioSrc;
+
+      // Update image source
+      imageDisplay.src = imgSrc;
+      imageDisplay.alt = `Image for ${audioSrc}`;
+    });
+  });
+</script>
+
+</body>
+</html>
